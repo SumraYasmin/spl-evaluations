@@ -79,6 +79,12 @@ class Block
     top <= other.top && other.include?(bottom)
   end
 
+  # This block contains only the top of the other block.
+
+  def intersects_by_top_only? (other)
+    other.top <= top
+  end
+
   # This block intersects with the bottom of the other block.
 
   def intersects_bottom? (other)
@@ -89,6 +95,18 @@ class Block
 
   def overlaps? (other)
     include?(other.top) || other.include?(top)
+  end
+
+  def same_origin? (other)
+    top == other.top && covers?(other)
+  end
+
+  def same_ending? (other)
+    bottom == other.bottom
+  end
+
+  def linked? (other)
+    top == other.end
   end
 
   # ==============
@@ -146,7 +164,21 @@ class Block
   # Return the result of subtracting the other Block (or Blocks) from self.
 
   def subtract (other)
-    # Implement.
+    result = []
+
+    if self == (other)
+    elsif same_origin?(other)
+      result = result.push(trim_from(other.end))
+    elsif linked?(other)
+      result = result.push(self)
+    elsif intersects_by_top_only?(other)
+    elsif same_ending?(other)
+      result = result.push(trim_to(other.start))
+    elsif overlaps?(other)
+      result = split(other)
+    end
+
+    result
   end
 
   alias :- :subtract
