@@ -134,9 +134,15 @@ class Block
   # Return the result of adding the other Block (or Blocks) to self.
 
   def add (other)
-    # Implement.
+    result = []
+
+    if overlaps?(other)
+      result.push(union(other))
+    else
+      result.push(other, self)
+    end
   end
-  
+
   # Return the result of subtracting the other Block (or Blocks) from self.
 
   def subtract (other)
